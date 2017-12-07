@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>RxPrism FB Public page Post Data</title>
+<script src="js/jquery.min.js"></script>
+<style type="text/css" src="css/style.css"></style>
+</head>
+<body>
+<h3>RX PRISM ALL FACEBOOK POSTS</h3>
+<button class="button1">Get the Latest FB Post</button>
+<button class ="button2">Get All Posts</button>
+<div>
+	<h4 class="postHead" style="display:none">Last Post on RxPrism Public Page :</h4>
+	<p id="postText" style="display:none"></p>
+	<h4 class="postAll" style="display:none">All Posts on RxPrism Public Page :</h4>
+	<p id="postAll" style="display:none"></p>
+</div>
+<script>
+$(document).ready(function(){
+	$('.button1').click(function(){
+		var buttonValue = "button1";
+		getFbPosts(buttonValue);
+	});
+	$('.button2').click(function(){
+		var buttonValue = "button2";
+		getFbPosts(buttonValue);
+	});
+	
+	function getFbPosts(buttonValue){
+		var name = "rxprism";
+		$.ajax({
+			url: 'http://allorigins.us/get?url=' +'https://www.facebook.com/'+name,
+			type: 'GET',
+			success: function(res) {
+				//console.log(res.contents);
+				var data = $.parseHTML(res.contents);  //<----try with $.parseHTML().
+				var fileDom = $(data);
+				var postArray = [];
+				fileDom.find('p').each(function() {
+					//console.log($(this).text());
+					postArray.push($(this).text());
+				});
+				console.log(postArray);
+				
+				if(buttonValue == "button1"){
+					$('#postText').text(postArray[0]);
+					$('.postHead').show();
+					$('#postText').show();
+				}else if(buttonValue == "button2"){
+					$('.postAll').show();
+					$('#postAll').show();
+					for(i=0;i<postArray.length;i++){
+						console.log(postArray[i]);
+						$('#postAll').append("* "+postArray[i]+"<br><br>");
+					}	
+				}
+		   },
+		   error : function(data){
+			console.log("error",data);
+		   }
+		});
+	}
+});
+
+/*$.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent('https://www.facebook.com/'+name) + '&callback=?', function(data){
+	console.log(data.contents);
+	var webPata = data.contents;
+	var test = webPata.toString()
+	console.log(test);
+});*/
+/*$.getJSON('http://allorigins.us/get?url=' + encodeURIComponent('https://www.facebook.com/'+name) + '&callback=?', function(data){
+    console.log(data);
+	var webdata = data.contents;
+	var stringData  = webdata.toString();
+	var d = document.createElement('div');
+	d.innerHTML = stringData;
+	parser = new DOMParser();
+    doc = parser.parseFromString(stringData, "text/xml");
+	var htmlObject = $(webdata);
+	console.log(d.firstChild);
+});*/
+
+</script>
+</body>
+</html>
